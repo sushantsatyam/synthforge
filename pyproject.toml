@@ -1,26 +1,49 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=68.0", "wheel>=0.41"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "synthforge"
 version = "0.1.0"
-description = "Next-generation synthetic data generation library with LLM-augmented pipelines"
+description = "Next-generation synthetic data generation with LLM-augmented pipelines, diffusion models, and evaluation-first design"
 readme = "README.md"
-license = {text = "Proprietary"}
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 authors = [
-    {name = "SynthForge Team"}
+    {name = "SynthForge Team", email = "synthforge@example.com"},
 ]
-keywords = ["synthetic-data", "privacy", "tabular", "machine-learning", "llm"]
+maintainers = [
+    {name = "SynthForge Team", email = "synthforge@example.com"},
+]
+keywords = [
+    "synthetic-data",
+    "privacy",
+    "tabular-data",
+    "machine-learning",
+    "llm",
+    "diffusion-models",
+    "data-generation",
+    "pii-detection",
+    "gaussian-copula",
+    "ctgan",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Healthcare Industry",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Security",
+    "Typing :: Typed",
 ]
 
 dependencies = [
@@ -35,59 +58,71 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-gan = [
-    "torch>=2.1",
-]
-diffusion = [
-    "torch>=2.1",
-]
-great = [
-    "torch>=2.1",
-    "transformers>=4.35",
-]
-llm = [
-    "litellm>=1.40",
-]
-presidio = [
-    "presidio-analyzer>=2.2",
-    "presidio-anonymizer>=2.2",
-]
-evaluation = [
-    "sdmetrics>=0.14",
-    "xgboost>=2.0",
-    "matplotlib>=3.7",
-    "seaborn>=0.13",
-]
-all = [
-    "synthforge[gan,diffusion,great,llm,presidio,evaluation]",
-]
+# GPU-accelerated synthesizers (require CUDA)
+gan = ["torch>=2.1"]
+diffusion = ["torch>=2.1"]
+great = ["torch>=2.1", "transformers>=4.35"]
+# LLM enrichment pipeline
+llm = ["litellm>=1.40"]
+# PII detection via Microsoft Presidio
+presidio = ["presidio-analyzer>=2.2", "presidio-anonymizer>=2.2"]
+# Evaluation metrics
+evaluation = ["sdmetrics>=0.14", "xgboost>=2.0", "matplotlib>=3.7", "seaborn>=0.13"]
+# All optional deps
+all = ["synthforge[gan,diffusion,great,llm,presidio,evaluation]"]
+# Development
 dev = [
     "synthforge[all]",
     "pytest>=7.4",
     "pytest-cov>=4.1",
     "ruff>=0.3",
     "mypy>=1.8",
+    "build>=1.0",
+    "twine>=5.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/YOUR_USERNAME/synthforge"
+Documentation = "https://github.com/YOUR_USERNAME/synthforge#readme"
+Repository = "https://github.com/YOUR_USERNAME/synthforge"
+Issues = "https://github.com/YOUR_USERNAME/synthforge/issues"
+Changelog = "https://github.com/YOUR_USERNAME/synthforge/blob/main/CHANGELOG.md"
 
 [project.scripts]
 synthforge = "synthforge.cli:main"
 
+[tool.setuptools]
+zip-safe = false
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["synthforge*"]
+exclude = ["tests*", "examples*"]
+
+[tool.setuptools.package-data]
+synthforge = ["py.typed"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W", "UP"]
+select = ["E", "F", "I", "W", "UP", "B", "SIM"]
 
 [tool.mypy]
 python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
+disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+markers = [
+    "cuda: tests that require CUDA GPU",
+    "slow: slow-running tests",
+]
+
+[tool.coverage.run]
+source = ["synthforge"]
+omit = ["tests/*", "examples/*"]

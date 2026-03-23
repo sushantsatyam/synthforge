@@ -1,0 +1,14 @@
+include LICENSE
+include README.md
+include CONTRIBUTING.md
+include CHANGELOG.md
+include pyproject.toml
+recursive-include synthforge py.typed
+recursive-include synthforge *.py
+recursive-include tests *.py
+recursive-include examples *.py
+prune tests/fixtures
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .DS_Store
